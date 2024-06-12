@@ -10,7 +10,7 @@ const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
 // import Chart from "react-apexcharts";
 
-const columns = [
+const columns: any = [
   {
     title: "Нэр",
     dataIndex: "name",
