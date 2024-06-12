@@ -34,6 +34,12 @@ const columns: any = [
     onFilter: (value: any, record: any) => record.nam.startsWith(value),
   },
   {
+    title: "Posts",
+    dataIndex: "posts",
+    defaultSortOrder: "descend",
+    sorter: (a: any, b: any) => a.posts - b.posts,
+  },
+  {
     title: "Like",
     dataIndex: "like",
     defaultSortOrder: "descend",
@@ -85,6 +91,7 @@ const LandingPage: NextPage<Props> = ({ data }): React.ReactElement => {
       const transformedData = data.map((item: any) => ({
         name: item.name,
         nam: item.nam,
+        posts: item.posts,
         like: item.like,
         share: item.share,
         comment: item.comment,
