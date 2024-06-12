@@ -74,7 +74,7 @@ const LandingPage: NextPage<unknown> = (): React.ReactElement => {
       const data = response.data.data;
       console.log(data);
       const transformedData = data.map((item: any) => ({
-        post: item.post.slice(0, 50),
+        post: item.post,
         nam: item.nam,
         like: item.like,
         share: item.share,

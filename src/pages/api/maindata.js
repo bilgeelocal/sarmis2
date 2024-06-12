@@ -3,6 +3,7 @@
 export default async function handler(req, res) {
   if (req.method === "GET") {
     try {
+      const { candidate, date } = req.query;
       const response = await fetch(
         `https://kiuhwqca87.execute-api.ap-southeast-1.amazonaws.com/api/maindata?date=2024-06-12`
       );
