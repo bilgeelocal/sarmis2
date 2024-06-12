@@ -13,6 +13,7 @@ const columns: any = [
     title: "Пост",
     dataIndex: "post",
     key: "name",
+    render: (text:any) => <a href={text} target="_blank">{text.slice(0, 50)}</a>,
   },
   {
     title: "Нам",
