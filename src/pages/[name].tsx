@@ -1,31 +1,18 @@
 import dynamic from "next/dynamic";
-import { GetServerSideProps, GetServerSidePropsResult } from "next";
 import { MainLayout } from "layouts";
 import { NextPage } from "next";
 import { Table, DatePicker } from "antd";
 import dayjs from "dayjs";
 import { useEffect, useState, useMemo } from "react";
 import axios from "axios";
+import { useRouter } from "next/router";
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
 const columns: any = [
   {
-    title: "Нэр",
-    dataIndex: "name",
+    title: "Пост",
+    dataIndex: "post",
     key: "name",
-    filters: [
-      {
-        text: "Батшугар",
-        value: "Батшугар",
-      },
-      {
-        text: "Номин",
-        value: "Номин",
-      },
-    ],
-
-    filterSearch: true,
-    onFilter: (value: any, record: any) => record.name.includes(value),
   },
   {
     title: "Нам",
@@ -72,39 +59,47 @@ const columns: any = [
   },
 ];
 
-interface Props {
-  data: any;
-}
-const LandingPage: NextPage<Props> = ({ data }): React.ReactElement => {
+const LandingPage: NextPage<unknown> = (): React.ReactElement => {
   const [dataSource, setDataSource] = useState([]);
+  const router = useRouter();
+  const { name } = router.query;
+  const [selectedDate, setSelectedDate] = useState<string>("2024-06-12");
+
   useEffect(() => {
     async function fetchData() {
-      console.log("yo", data);
-      try {
-        const transformedData = data.map((item: any) => ({
-          name: item.name,
-          nam: item.nam,
-          like: item.like,
-          share: item.share,
-          comment: item.comment,
-          grey_like: item.grey_like,
-          grey_share: item.grey_share,
-          grey_comment: item.grey_comment,
-        }));
-        setDataSource(transformedData);
-        console.log("Transformed data:", transformedData); // Log the transformed data
-      } catch (error) {
-        console.error("Failed to fetch data:", error);
-        setDataSource([]);
-      }
+      const response = await axios.get(
+        `/api/detail?candidate=${name}&date=${selectedDate}`
+      );
+      const data = response.data.data;
+      console.log(data);
+      const transformedData = data.map((item: any) => ({
+        post: item.post.slice(0, 50),
+        nam: item.nam,
+        like: item.like,
+        share: item.share,
+        comment: item.comment,
+        grey_like: item.grey_like,
+        grey_share: item.grey_share,
+        grey_comment: item.grey_comment,
+      }));
+      setDataSource(transformedData);
     }
     fetchData();
-  }, []);
-  const { totalLikes, totalComments, likePercentage } = useMemo(() => {
-    console.log("Data source in useMemo:", dataSource); // Log dataSource used in useMemo
+  }, [name, selectedDate]);
 
-    const totalLikes = Array.isArray(dataSource) ? dataSource.reduce((sum: any, item: any) => sum + parseInt(item.like || 0, 10), 0) : 0;
-    const totalComments = Array.isArray(dataSource) ? dataSource.reduce((sum, item: any) => sum + parseInt(item.comment || 0, 10), 0) : 0;
+  const { totalLikes, totalComments, likePercentage } = useMemo(() => {
+    const totalLikes = Array.isArray(dataSource)
+      ? dataSource.reduce(
+          (sum: any, item: any) => sum + parseInt(item.like || 0, 10),
+          0
+        )
+      : 0;
+    const totalComments = Array.isArray(dataSource)
+      ? dataSource.reduce(
+          (sum, item: any) => sum + parseInt(item.comment || 0, 10),
+          0
+        )
+      : 0;
     const total = totalLikes + totalComments;
     const likePercentage = total ? Math.round((totalLikes / total) * 100) : 0;
     return { totalLikes, totalComments, likePercentage };
@@ -113,14 +108,13 @@ const LandingPage: NextPage<Props> = ({ data }): React.ReactElement => {
   const chartOptions: any = {
     chart: {
       type: "donut",
-      fontFamily: "'Plus Jakarta Sans', sans-serif",
       foreColor: "#adb0bb",
       toolbar: {
         show: false,
       },
       height: 155,
     },
-    colors: ["#5D87FF", "#ECF2FF"],
+    colors: ["#5D87FF", "#364670", "#EF6C00"],
     plotOptions: {
       pie: {
         startAngle: 0,
@@ -133,12 +127,16 @@ const LandingPage: NextPage<Props> = ({ data }): React.ReactElement => {
     },
     tooltip: {
       y: {
-        formatter: (value: any) => `${value} (${Math.round((value / (totalLikes + totalComments)) * 100)}%)`,
+        formatter: (value: any) =>
+          `${value} (${Math.round(
+            (value / (totalLikes + totalComments)) * 100
+          )}%)`,
       },
     },
     stroke: {
-      show: false,
+      show: true,
     },
+    labels: ["Total likes", "Total comments", "Like percentage"],
     dataLabels: {
       enabled: true,
       formatter: (val: any) => `${val.toFixed(2)}%`,
@@ -148,21 +146,21 @@ const LandingPage: NextPage<Props> = ({ data }): React.ReactElement => {
     },
   };
 
-  const chartSeries = [likePercentage, 100 - likePercentage];
+  const chartSeries = [totalLikes, totalComments, likePercentage];
 
   function onClickRow(record: any) {
     console.log("Selected record:", record);
   }
 
   function onChangeDate(date: any) {
-    console.log("Selected date:", dayjs(date).format("YYYY-MM-DD"));
+    setSelectedDate(dayjs(date).format("YYYY-MM-DD"));
   }
 
   return (
     <MainLayout>
       <div className="p-6 w-full">
-        <div className="w-full flex">
-          <div className="w-3/4">
+        <div className="flex flex-col">
+          <div>
             <DatePicker defaultValue={dayjs()} onChange={onChangeDate} />
             <Table
               dataSource={dataSource}
@@ -172,25 +170,19 @@ const LandingPage: NextPage<Props> = ({ data }): React.ReactElement => {
               })}
             />
           </div>
-          <div className="w-1/4">
-            <Chart options={chartOptions} series={chartSeries} type="donut" width={500} height={320} />
+          <div className="">
+            <Chart
+              options={chartOptions}
+              series={chartSeries}
+              type="donut"
+              width={500}
+              height={320}
+            />
           </div>
         </div>
       </div>
     </MainLayout>
   );
-};
-
-export const getServerSideProps: GetServerSideProps = async (context): Promise<GetServerSidePropsResult<any>> => {
-  const response = await axios.get("https://kiuhwqca87.execute-api.ap-southeast-1.amazonaws.com/api/maindata", {
-    responseType: "json",
-  });
-
-  return {
-    props: {
-      data: response.data.data,
-    },
-  };
 };
 
 export default LandingPage;

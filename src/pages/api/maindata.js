@@ -1,8 +1,11 @@
 // pages/api/fetchData.js
+
 export default async function handler(req, res) {
   if (req.method === "GET") {
     try {
-      const response = await fetch("https://kiuhwqca87.execute-api.ap-southeast-1.amazonaws.com/api/maindata");
+      const response = await fetch(
+        `https://kiuhwqca87.execute-api.ap-southeast-1.amazonaws.com/api/maindata`
+      );
       if (!response.ok) {
         throw new Error("Алдаа гарлаа");
       }

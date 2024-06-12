@@ -9,7 +9,11 @@ interface Props {
   NO_PADDING?: boolean;
 }
 
-const MainLayout: React.FC<Props> = ({ children, className = "", NO_PADDING = false }) => {
+const MainLayout: React.FC<Props> = ({
+  children,
+  className = "",
+  NO_PADDING = false,
+}) => {
   const router = useRouter();
   const checkActivePage = (_: string) => {
     if (router.asPath.includes(_.toLowerCase())) return true;
@@ -42,16 +46,33 @@ const MainLayout: React.FC<Props> = ({ children, className = "", NO_PADDING = fa
   ];
   return (
     <>
-      <div className={`flex bg-[#F3FAFB] h-full w-full ${className}`}>
-        <div className="flex flex-col gap-6 py-6 px-6 bg-white">
-          <div className="flex items-center gap-2 cursor-pointer" onClick={() => router.push("/")}>
+      <div className={`flex h-full w-full ${className}`}>
+        <div className="flex flex-col gap-6 py-6 px-6 bg-[#F3FAFB]">
+          <div
+            className="flex items-center gap-2 cursor-pointer"
+            onClick={() => router.push("/")}
+          >
             <BiHomeAlt2 size={20} />
-            <span className="font-medium font-exo text-[#384454]">Нүүр хуудас</span>
+            <span className="font-medium font-exo text-[#384454]">
+              Нүүр хуудас
+            </span>
           </div>
           <Divider flexItem />
           {users.map((it) => (
-            <div className={`hover:cursor-pointer rounded-xl py-2 px-5 ${checkActivePage(it.link) ? "bg-[#c6d6eb]" : ""}`} key={it.id} onClick={() => router.push(it.link)}>
-              <span className={`font-exo font-medium ${checkActivePage(it.link) ? "text-[#044BE7]" : "text-[#384454]"}`}>{it.title}</span>
+            <div
+              className={`hover:cursor-pointer rounded-xl py-2 px-5 ${
+                checkActivePage(it.link) ? "bg-[#c6d6eb]" : ""
+              }`}
+              key={it.id}
+              onClick={() => router.push(it.link)}
+            >
+              <span
+                className={`font-exo font-medium ${
+                  checkActivePage(it.link) ? "text-[#044BE7]" : "text-[#384454]"
+                }`}
+              >
+                {it.title}
+              </span>
             </div>
           ))}
         </div>
