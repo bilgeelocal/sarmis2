@@ -1,5 +1,5 @@
-"use-client";
 import dynamic from "next/dynamic";
+import { GetServerSideProps, GetServerSidePropsResult } from "next";
 import { MainLayout } from "layouts";
 import { NextPage } from "next";
 import { Table, DatePicker } from "antd";
@@ -7,8 +7,6 @@ import dayjs from "dayjs";
 import { useEffect, useState, useMemo } from "react";
 import axios from "axios";
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
-
-// import Chart from "react-apexcharts";
 
 const columns: any = [
   {
@@ -73,30 +71,28 @@ const columns: any = [
     sorter: (a: any, b: any) => a.comment - b.comment,
   },
 ];
-const LandingPage: NextPage<unknown> = (): React.ReactElement => {
+
+interface Props {
+  data: any;
+}
+const LandingPage: NextPage<Props> = ({ data }): React.ReactElement => {
   const [dataSource, setDataSource] = useState([]);
   useEffect(() => {
     async function fetchData() {
+      console.log("yo", data);
       try {
-        const response = await axios.get("https://kiuhwqca87.execute-api.ap-southeast-1.amazonaws.com/api/maindata");
-        const result = await response.data;
-        console.log("fetched data:", result);
-        if (result.data) {
-          const transformedData = result.data.map((item: any) => ({
-            name: item.name,
-            nam: item.nam,
-            like: item.like,
-            share: item.share,
-            comment: item.comment,
-            grey_like: item.grey_like,
-            grey_share: item.grey_share,
-            grey_comment: item.grey_comment,
-          }));
-          setDataSource(transformedData);
-          console.log("Transformed data:", transformedData); // Log the transformed data
-        } else {
-          setDataSource([]);
-        }
+        const transformedData = data.map((item: any) => ({
+          name: item.name,
+          nam: item.nam,
+          like: item.like,
+          share: item.share,
+          comment: item.comment,
+          grey_like: item.grey_like,
+          grey_share: item.grey_share,
+          grey_comment: item.grey_comment,
+        }));
+        setDataSource(transformedData);
+        console.log("Transformed data:", transformedData); // Log the transformed data
       } catch (error) {
         console.error("Failed to fetch data:", error);
         setDataSource([]);
@@ -183,6 +179,18 @@ const LandingPage: NextPage<unknown> = (): React.ReactElement => {
       </div>
     </MainLayout>
   );
+};
+
+export const getServerSideProps: GetServerSideProps = async (context): Promise<GetServerSidePropsResult<any>> => {
+  const response = await axios.get("https://kiuhwqca87.execute-api.ap-southeast-1.amazonaws.com/api/maindata", {
+    responseType: "json",
+  });
+
+  return {
+    props: {
+      data: response.data.data,
+    },
+  };
 };
 
 export default LandingPage;
