@@ -63,12 +63,12 @@ const columns: any = [
     defaultSortOrder: "descend",
     sorter: (a: any, b: any) => a.like - b.like,
   },
-  {
-    title: "Grey Share",
-    dataIndex: "grey_share",
-    defaultSortOrder: "descend",
-    sorter: (a: any, b: any) => a.share - b.share,
-  },
+  // {
+  //   title: "Grey Share",
+  //   dataIndex: "grey_share",
+  //   defaultSortOrder: "descend",
+  //   sorter: (a: any, b: any) => a.share - b.share,
+  // },
   {
     title: "Grey Comment",
     dataIndex: "grey_comment",

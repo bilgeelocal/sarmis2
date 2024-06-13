@@ -110,3 +110,14 @@
   font-weight: 900;
   font-style: italic;
 }
+.charts-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: center; /* Center align the charts horizontally */
+  align-items: center; /* Align the charts vertically */
+  width: 100%; /* Full width to spread out charts */
+}
+
+.chart-container {
+  margin: 10px; /* Adds space between the charts */
+}

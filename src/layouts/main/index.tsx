@@ -41,6 +41,7 @@ const MainLayout: React.FC<Props> = ({
     { id: v4(), title: "Болортуяа", link: "/bolortuya" },
     { id: v4(), title: "Сайнзориг", link: "/sainzorig" },
     { id: v4(), title: "Амаржин", link: "/amarjin" },
+    { id: v4(), title: "Амаржин2", link: "/amarjin2" },
     { id: v4(), title: "Баярсайхан", link: "/bayarsaikhan" },
     { id: v4(), title: "Тунгалагхараа", link: "/tungalagkharaa" },
   ];

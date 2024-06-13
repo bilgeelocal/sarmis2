@@ -46,12 +46,12 @@ const columns: any = [
     defaultSortOrder: "descend",
     sorter: (a: any, b: any) => a.like - b.like,
   },
-  {
-    title: "Grey Share",
-    dataIndex: "grey_share",
-    defaultSortOrder: "descend",
-    sorter: (a: any, b: any) => a.share - b.share,
-  },
+  // {
+  //   title: "Grey Share",
+  //   dataIndex: "grey_share",
+  //   defaultSortOrder: "descend",
+  //   sorter: (a: any, b: any) => a.share - b.share,
+  // },
   {
     title: "Grey Comment",
     dataIndex: "grey_comment",
@@ -88,24 +88,58 @@ const LandingPage: NextPage<unknown> = (): React.ReactElement => {
     fetchData();
   }, [name, selectedDate]);
 
-  const { totalLikes, totalComments, likePercentage } = useMemo(() => {
+  //like tooloh
+  const { totalLikes, grey_likes } = useMemo(() => {
     const totalLikes = Array.isArray(dataSource)
       ? dataSource.reduce(
           (sum: any, item: any) => sum + parseInt(item.like || 0, 10),
           0
         )
       : 0;
-    const totalComments = Array.isArray(dataSource)
+    const grey_likes = Array.isArray(dataSource)
       ? dataSource.reduce(
-          (sum, item: any) => sum + parseInt(item.comment || 0, 10),
+          (sum, item: any) => sum + parseInt(item.grey_like || 0, 10),
           0
         )
       : 0;
-    const total = totalLikes + totalComments;
-    const likePercentage = total ? Math.round((totalLikes / total) * 100) : 0;
-    return { totalLikes, totalComments, likePercentage };
+    const total = totalLikes + grey_likes;
+    return { totalLikes, grey_likes };
   }, [dataSource]);
+//comment tooloh 
+const { totalComments, grey_comments } = useMemo(() => {
+  const totalComments = Array.isArray(dataSource)
+    ? dataSource.reduce(
+        (sum: any, item: any) => sum + parseInt(item.comment || 0, 10),
+        0
+      )
+    : 0;
+  const grey_comments = Array.isArray(dataSource)
+    ? dataSource.reduce(
+        (sum, item: any) => sum + parseInt(item.grey_comment || 0, 10),
+        0
+      )
+    : 0;
+  const total = totalComments + grey_comments;
+  return { totalComments, grey_comments };
+}, [dataSource]);
 
+//share tooloh
+const { totalShares, grey_shares } = useMemo(() => {
+  const totalShares = Array.isArray(dataSource)
+    ? dataSource.reduce(
+        (sum: any, item: any) => sum + parseInt(item.share || 0, 10),
+        0
+      )
+    : 0;
+  const grey_shares = Array.isArray(dataSource)
+    ? dataSource.reduce(
+        (sum, item: any) => sum + parseInt(item.grey_share || 0, 10),
+        0
+      )
+    : 0;
+  const total = totalShares + grey_shares;
+  return { totalShares, grey_shares };
+}, [dataSource]);
   const chartOptions: any = {
     chart: {
       type: "donut",
@@ -130,14 +164,14 @@ const LandingPage: NextPage<unknown> = (): React.ReactElement => {
       y: {
         formatter: (value: any) =>
           `${value} (${Math.round(
-            (value / (totalLikes + totalComments)) * 100
-          )}%)`,
+            (value / (totalLikes + grey_likes)) * 100
+          )}%)`, 
       },
     },
     stroke: {
       show: true,
     },
-    labels: ["Total likes", "Total comments", "Like percentage"],
+    labels: ["Total count", "Grey count"],
     dataLabels: {
       enabled: true,
       formatter: (val: any) => `${val.toFixed(2)}%`,
@@ -146,8 +180,13 @@ const LandingPage: NextPage<unknown> = (): React.ReactElement => {
       show: false,
     },
   };
+  
 
-  const chartSeries = [totalLikes, totalComments, likePercentage];
+  const chartSeries1 = [totalLikes, grey_likes];
+
+  const chartSeries2 = [totalComments, grey_comments];
+
+  const chartSeries3 = [totalShares, grey_shares];
 
   function onClickRow(record: any) {
     console.log("Selected record:", record);
@@ -171,17 +210,42 @@ const LandingPage: NextPage<unknown> = (): React.ReactElement => {
               })}
             />
           </div>
-          <div className="">
-            <Chart
-              options={chartOptions}
-              series={chartSeries}
-              type="donut"
-              width={500}
-              height={320}
-            />
+           <div className="charts-row">
+            <div className="chart-container">
+              <div className="status-label" style={{ textAlign: 'center', color: '#3498db',fontWeight: 'bold' }}>Likes Status</div>
+              <Chart
+                options={chartOptions}
+                series={chartSeries1}
+                type="donut"
+                width={250}
+                height={320}
+              />
+            </div>
+            <div className="chart-container">
+              <div className="status-label" style={{ textAlign: 'center', color: '#e74c3c',fontWeight: 'bold' }}>Comments Status</div>
+              <Chart
+                options={chartOptions}
+                series={chartSeries2}
+                type="donut"
+                width={250}
+                height={320}
+              />
+            </div>
+            <div className="chart-container">
+              <div className="status-label" style={{ textAlign: 'center', color: '#2ecc71',fontWeight: 'bold' }}>Shares Status</div>
+              <Chart
+                options={chartOptions}
+                series={chartSeries3}
+                type="donut"
+                width={250}
+                height={320}
+              />
+            </div>
           </div>
         </div>
-      </div>
+      
+        </div>
+      
     </MainLayout>
   );
 };
