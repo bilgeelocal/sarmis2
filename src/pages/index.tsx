@@ -197,13 +197,13 @@ const LandingPage: NextPage<Props> = ({ data }): React.ReactElement => {
             />
           </div>
           <div>
-            <Chart
+            {/* <Chart
               options={chartOptions}
               series={chartSeries}
               type="donut"
               width={500}
               height={320}
-            />
+            /> */}
           </div>
         </div>
       </div>

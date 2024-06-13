@@ -5,7 +5,7 @@ export default async function handler(req, res) {
     try {
       const { candidate, date } = req.query;
       const response = await fetch(
-        `https://kiuhwqca87.execute-api.ap-southeast-1.amazonaws.com/api/posts?candidate=${candidate}&date=${date}`
+        `https://8d5jof9z6i.execute-api.ap-southeast-1.amazonaws.com/api/posts?candidate=${candidate}&date=2024-06-13`
       );
       if (!response.ok) {
         throw new Error("Алдаа гарлаа");

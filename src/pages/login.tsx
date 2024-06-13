@@ -10,7 +10,7 @@ const Login = () => {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     // Simple validation (In real scenario, replace this with proper authentication logic)
-    if (username === 'admin' && password === 'sarmis467') {
+    if (username === 'admin' && password === '$4rmis467') {
       sessionStorage.setItem('auth', 'true'); // Setting session storage item
       router.push('/'); // Navigate to the home page
     } else {
