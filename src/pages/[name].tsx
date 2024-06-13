@@ -10,6 +10,12 @@ const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
 const columns: any = [
   {
+    title: "Дугаар",
+    dataIndex: "id",
+    key: "id",
+    render: (text: any, record: any, index: number) => <a href={text} target="_blank">{index + 1}</a>,
+  },
+  {
     title: "Пост",
     dataIndex: "post",
     key: "name",
@@ -61,6 +67,8 @@ const columns: any = [
 ];
 
 const LandingPage: NextPage<unknown> = (): React.ReactElement => {
+  const [pagination, setPagination] = useState({ current: 1, pageSize: 10 });  // Assuming 10 items per page
+
   const [dataSource, setDataSource] = useState([]);
   const router = useRouter();
   const { name } = router.query;
