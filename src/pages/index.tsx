@@ -7,6 +7,10 @@ import { useEffect, useState, useMemo } from "react";
 import axios from "axios";
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
+import useAuth from '../pages/useAuth';
+
+
+
 const columns: any = [
   {
     title: "Нэр",
@@ -176,7 +180,10 @@ const LandingPage: NextPage<Props> = ({ data }): React.ReactElement => {
   }
 
   return (
+    useAuth(),
+    
     <MainLayout>
+      
       <div className="p-6 w-full">
         <div className="flex flex-col">
           <div>
