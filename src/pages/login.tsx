@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
+import styles from './Login.module.css'; // Importing the styles
 
 const Login = () => {
   const [username, setUsername] = useState('');
@@ -7,27 +8,27 @@ const Login = () => {
   const [loginError, setLoginError] = useState('');
   const router = useRouter();
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    // Simple validation (In real scenario, replace this with proper authentication logic)
     if (username === 'admin' && password === '$4rmis467') {
-      sessionStorage.setItem('auth', 'true'); // Setting session storage item
-      router.push('/'); // Navigate to the home page
+      sessionStorage.setItem('auth', 'true');
+      router.push('/');
     } else {
       setLoginError('Invalid credentials');
-      sessionStorage.removeItem('auth'); // Ensure auth session is cleared
+      sessionStorage.removeItem('auth');
     }
   };
 
   return (
-    <div className="login-container">
-      <form onSubmit={handleLogin}>
+    <div className={styles.loginContainer}>
+      <form onSubmit={handleLogin} className={styles.loginForm}>
         <input
           type="text"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
           placeholder="Username"
           required
+          className={styles.loginInput}
         />
         <input
           type="password"
@@ -35,9 +36,10 @@ const Login = () => {
           onChange={(e) => setPassword(e.target.value)}
           placeholder="Password"
           required
+          className={styles.loginInput}
         />
-        <button type="submit">Login</button>
-        {loginError && <p>{loginError}</p>}
+        <button type="submit" className={styles.loginButton}>Login</button>
+        {loginError && <p className={styles.errorMessage}>{loginError}</p>}
       </form>
     </div>
   );
